@@ -35,12 +35,11 @@ SCREENenter="$(printf \\r)"
 #Variables for Logs
 AUTHlog="/home/warcraft/server/bin/Auth.log"
 WORLDlog="/home/warcraft/server/bin/Server.log"
-#Misc Variables 
-WORLDupdate=""
 
 
 while [ "$1" != "" ]; do
     case $1 in
+
         #Starts the Auth server on the defined screen#
         -startAUTH )
 			$STARTscreenauth
@@ -61,11 +60,28 @@ while [ "$1" != "" ]; do
                         sleep 30
                         tail -n1 $WORLDlog
                         ;;
+        #Starts the everything#
+        -start )
+			$STARTscreenauth
+			sleep 5
+                        $SCREENcommandauth "cd $SERVERpath$SCREENenter"
+			sleep 5
+                        $SCREENcommandauth "$AUTHstart$SCREENenter"
+                        sleep 20
+                        tail -n1 $AUTHlog
+			$STARTscreenworld
+			sleep 5
+                        $SCREENcommandworld "cd $SERVERpath$SCREENenter"
+			sleep 5
+                        $SCREENcommandworld "$WORLDstart$SCREENenter"
+                        sleep 30
+                        tail -n1 $WORLDlog
+                        ;;
         #Starts the World server on the defined screen#
         -updateWORLD )
 			
 			sleep 5
-                        $SCREENcommandworld "server shutdown 300 ($(date +%Y%m%d-%H%M))$SCREENenter"
+                        $SCREENcommandworld "server shutdown 300 (Applying changes : $(date +%Y%m%d-%H%M))$SCREENenter"
 			sleep 330
 							cd ~/TrinityCore/
 							sleep 5
@@ -88,7 +104,10 @@ while [ "$1" != "" ]; do
         #Lists all the commands in this script#
         -help )
                         echo "Valid commands :";
-                        echo "-start ~ starts the world with predefined settings.";
+                        echo "-start ~ starts everthing.";
+			echo "-startAUTH ~ starts auth.";
+			echo "-startWORLD ~ starts world.";
+			echo "-updateWORLD ~ Shuts down server in 5 minutes, updates, then starts.";
                         exit
                         ;;
 	#If you ran a command that wasn't here... lets give you help#
